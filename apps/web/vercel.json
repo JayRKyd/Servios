@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "installCommand": "npm install -g pnpm@10.0.0 && pnpm install --no-frozen-lockfile --ignore-scripts",
-  "buildCommand": "pnpm build",
-  "devCommand": "pnpm dev"
+  "installCommand": "npm ci --ignore-scripts",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev"
 }

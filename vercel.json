@@ -1,7 +1,7 @@
 {
   "framework": "nextjs",
-  "installCommand": "corepack enable && corepack prepare pnpm@10.11.0 --activate && pnpm install --filter @servios/web... --no-frozen-lockfile --ignore-scripts",
-  "buildCommand": "pnpm --filter @servios/web build",
+  "installCommand": "cd apps/web && npm install --ignore-scripts",
+  "buildCommand": "cd apps/web && npm run build",
   "outputDirectory": "apps/web/.next",
-  "devCommand": "pnpm --filter @servios/web dev"
+  "devCommand": "cd apps/web && npm run dev"
 }
