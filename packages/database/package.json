@@ -1,0 +1,9 @@
+{
+  "name": "@servios/database",
+  "version": "0.0.0",
+  "private": true,
+  "exports": { ".": "./src/index.ts" },
+  "scripts": { "type-check": "tsc --noEmit" },
+  "dependencies": { "@supabase/supabase-js": "^2.50.0" },
+  "devDependencies": { "typescript": "^5.8.3" }
+}

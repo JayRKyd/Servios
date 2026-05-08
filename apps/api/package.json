@@ -1,0 +1,27 @@
+{
+  "name": "@servios/api",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "echo \"API is now served by apps/web (Next.js at port 3000). No separate server needed.\"",
+    "build": "echo \"API is now bundled with apps/web.\"",
+    "start": "echo \"API is now served by apps/web.\"",
+    "lint": "eslint .",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.4.3",
+    "@supabase/supabase-js": "^2.50.0",
+    "algoliasearch": "^5.50.1",
+    "hono": "^4.7.0",
+    "stripe": "^17.7.0",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.0",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  }
+}
