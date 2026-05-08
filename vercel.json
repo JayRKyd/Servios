@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "installCommand": "npm install -g pnpm && pnpm install --filter @servios/web... --ignore-scripts",
+  "installCommand": "npm install -g pnpm@10.0.0 && pnpm install --filter @servios/web... --frozen-lockfile --ignore-scripts",
   "buildCommand": "pnpm --filter @servios/web build",
   "outputDirectory": "apps/web/.next",
   "devCommand": "pnpm --filter @servios/web dev"
