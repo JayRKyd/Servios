@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "installCommand": "pnpm install --filter @servios/web...",
+  "installCommand": "npm install -g pnpm && pnpm install --filter @servios/web... --ignore-scripts",
   "buildCommand": "pnpm --filter @servios/web build",
   "outputDirectory": "apps/web/.next",
   "devCommand": "pnpm --filter @servios/web dev"
