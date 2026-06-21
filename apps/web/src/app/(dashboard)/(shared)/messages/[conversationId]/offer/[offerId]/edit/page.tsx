@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { apiClient } from '@/lib/api-client'
 import { formatCurrency } from '@/lib/utils'
@@ -13,15 +13,43 @@ interface MilestoneRow {
 
 const EMPTY_MILESTONE: MilestoneRow = { title: '', description: '', amount: '', due_date: '' }
 
-export default function NewOfferPage() {
-  const { conversationId } = useParams<{ conversationId: string }>()
+export default function EditOfferPage() {
+  const { conversationId, offerId } = useParams<{ conversationId: string; offerId: string }>()
   const router = useRouter()
 
   const [title, setTitle]             = useState('')
   const [description, setDescription] = useState('')
   const [milestones, setMilestones]   = useState<MilestoneRow[]>([{ ...EMPTY_MILESTONE }])
   const [saving, setSaving]           = useState(false)
+  const [loading, setLoading]         = useState(true)
   const [error, setError]             = useState<string | null>(null)
+
+  useEffect(() => {
+    async function loadOffer() {
+      const { data, error: err } = await apiClient(`/api/v1/conversations/${conversationId}/offers/${offerId}`)
+      if (err) {
+        setError(err)
+        setLoading(false)
+        return
+      }
+
+      if (data?.offer) {
+        setTitle(data.offer.title || '')
+        setDescription(data.offer.description || '')
+        
+        if (data.offer.milestones && data.offer.milestones.length > 0) {
+          setMilestones(data.offer.milestones.map((m: any) => ({
+            title: m.title || '',
+            description: m.description || '',
+            amount: (m.amount_cents / 100).toString(),
+            due_date: m.due_date || '',
+          })))
+        }
+      }
+      setLoading(false)
+    }
+    loadOffer()
+  }, [conversationId, offerId])
 
   const totalCents = milestones.reduce((sum, m) => {
     const dollars = parseFloat(m.amount)
@@ -40,7 +68,7 @@ export default function NewOfferPage() {
     setMilestones((prev) => prev.filter((_, idx) => idx !== i))
   }
 
-  async function handleSend() {
+  async function handleSave() {
     if (!title.trim()) { setError('Add a job title'); return }
     const validMilestones = milestones.filter((m) => m.title.trim() && parseFloat(m.amount) > 0)
     if (validMilestones.length === 0) { setError('Add at least one milestone with a title and amount'); return }
@@ -48,8 +76,8 @@ export default function NewOfferPage() {
     setSaving(true)
     setError(null)
 
-    const { error: err } = await apiClient(`/api/v1/conversations/${conversationId}/offers`, {
-      method: 'POST',
+    const { error: err } = await apiClient(`/api/v1/conversations/${conversationId}/offers/${offerId}`, {
+      method: 'PUT',
       body: JSON.stringify({
         title: title.trim(),
         description: description.trim() || undefined,
@@ -68,11 +96,19 @@ export default function NewOfferPage() {
     router.push(`/messages/${conversationId}`)
   }
 
+  if (loading) {
+    return (
+      <div className="flex h-[calc(100vh-8rem)] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    )
+  }
+
   return (
     <div className="mx-auto max-w-xl space-y-6 py-8 px-4">
       <div className="flex items-center gap-3">
         <button onClick={() => router.back()} className="text-sm text-primary hover:underline">← Back</button>
-        <h1 className="text-xl font-bold text-gray-900">Send an Offer</h1>
+        <h1 className="text-xl font-bold text-gray-900">Edit Offer</h1>
       </div>
 
       {error && (
@@ -163,11 +199,11 @@ export default function NewOfferPage() {
       </div>
 
       <button
-        onClick={handleSend}
+        onClick={handleSave}
         disabled={saving}
         className="w-full rounded-xl bg-primary py-3 text-sm font-semibold text-white hover:bg-primary-dark disabled:opacity-50"
       >
-        {saving ? 'Sending…' : 'Send Offer →'}
+        {saving ? 'Saving…' : 'Save Changes →'}
       </button>
     </div>
   )
